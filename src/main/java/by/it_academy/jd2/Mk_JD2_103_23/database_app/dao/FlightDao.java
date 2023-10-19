@@ -29,35 +29,37 @@ public class FlightDao implements IFlightDao {
         {
             List<Flight> data = new ArrayList<>();
             while (rs.next()){
-                Flight item = new Flight();
-                item.setFlightId(rs.getString("flight_id"));
-                item.setFlightNo(rs.getString("flight_no"));
-                item.setScheduledDeparture(rs.getString("scheduled_departure"));
-                item.setScheduledDepartureLocal(rs.getString("scheduled_departure_local"));
-                item.setScheduledArrival(rs.getString("scheduled_arrival"));
-                item.setScheduledArrivalLocal(rs.getString("scheduled_arrival_local"));
-                item.setScheduledDuration(rs.getString("scheduled_duration"));
-                item.setDepartureAirport(rs.getString("departure_airport"));
-                item.setDepartureAirportName(rs.getString("departure_airport_name"));
-                item.setDepartureCity(rs.getString("departure_city"));
-                item.setArrivalAirport(rs.getString("arrival_airport"));
-                item.setArrivalAirportName(rs.getString("arrival_airport_name"));
-                item.setArrivalCity(rs.getString("arrival_city"));
-                item.setStatus(rs.getString("status"));
-                item.setAircraftCode(rs.getString("aircraft_code"));
-                item.setActualDeparture(rs.getString("actual_departure"));
-                item.setActualDepartureLocal(rs.getString("actual_departure_local"));
-                item.setActualArrival(rs.getString("actual_arrival"));
-                item.setActualArrivalLocal(rs.getString("actual_arrival_local"));
-                item.setActualDuration(rs.getString("actual_duration"));
-
-                data.add(item);
+                data.add(map(rs));
             }
 
             return data;
 
         } catch (SQLException e){
-            throw new IllegalStateException("Ошибка получения информации о аэропортах", e);
+            throw new IllegalStateException("Ошибка получения информации о полетах", e);
         }
+    }
+
+    public Flight map(ResultSet rs) throws SQLException {
+        Flight item = new Flight();
+        item.setFlightId(rs.getString("flight_id"));
+        item.setFlightNo(rs.getString("flight_no"));
+        item.setScheduledDeparture(rs.getString("scheduled_departure"));
+        item.setScheduledDepartureLocal(rs.getString("scheduled_departure_local"));
+        item.setScheduledArrival(rs.getString("scheduled_arrival"));
+        item.setScheduledArrivalLocal(rs.getString("scheduled_arrival_local"));
+        item.setScheduledDuration(rs.getString("scheduled_duration"));
+        item.setDepartureAirport(rs.getString("departure_airport"));
+        item.setDepartureAirportName(rs.getString("departure_airport_name"));
+        item.setDepartureCity(rs.getString("departure_city"));
+        item.setArrivalAirport(rs.getString("arrival_airport"));
+        item.setArrivalAirportName(rs.getString("arrival_airport_name"));
+        item.setArrivalCity(rs.getString("arrival_city"));
+        item.setStatus(rs.getString("status"));
+        item.setAircraftCode(rs.getString("aircraft_code"));
+        item.setActualDeparture(rs.getString("actual_departure"));
+        item.setActualDepartureLocal(rs.getString("actual_departure_local"));
+        item.setActualArrival(rs.getString("actual_arrival"));
+
+        return item;
     }
 }
