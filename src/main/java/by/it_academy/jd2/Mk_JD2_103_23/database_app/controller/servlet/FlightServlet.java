@@ -14,10 +14,28 @@ import java.util.List;
 
 @WebServlet(urlPatterns = "/flights")
 public class FlightServlet extends HttpServlet {
+    private static final String PAGE_PARAM = "page";
+    private static final String SIZE_PARAM = "size";
     private final IFlightService service = FlightServiceFactory.getInstance();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        List<Flight> allFlight = this.service.getAll();
+
+        String pageRaw = req.getParameter(PAGE_PARAM);
+        int page;
+        if(pageRaw == null || pageRaw.isBlank()){
+            page = 1;
+        } else {
+            page = Integer.parseInt(pageRaw);
+        }
+        String sizeRaw = req.getParameter(SIZE_PARAM);
+        int size;
+        if(sizeRaw == null || sizeRaw.isBlank()){
+            size = 50;
+        } else {
+            size = Integer.parseInt(sizeRaw);
+        }
+
+        List<Flight> allFlight = this.service.getPage(page, size);
         req.setAttribute("allFlight", allFlight);
         req.getRequestDispatcher("/ui/flights.jsp").forward(req, resp);
     }

@@ -1,8 +1,6 @@
 package by.it_academy.jd2.Mk_JD2_103_23.database_app.dao;
 
-import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Airport;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Flight;
-import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.api.IAirportDao;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.api.IFlightDao;
 
 import javax.sql.DataSource;
@@ -15,7 +13,8 @@ import java.util.List;
 
 public class FlightDao implements IFlightDao {
     private final static String GET_ALL_FLIGHTS = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v;";
-
+    private final static String GET_PAGE_FLIGHT = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v LIMIT ? OFFSET ?;";
+    private final static String GET_COUNT_FLIGHT = "SELECT count(*) FROM bookings.flights_v;";
     private final DataSource dataSource;
 
     public FlightDao(DataSource dataSource) {
@@ -34,6 +33,42 @@ public class FlightDao implements IFlightDao {
 
             return data;
 
+        } catch (SQLException e){
+            throw new IllegalStateException("Ошибка получения информации о полетах", e);
+        }
+    }
+
+    @Override
+    public List<Flight> getPage(int page, int size) {
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stm = conn.prepareStatement(GET_PAGE_FLIGHT);
+        )
+        {
+            stm.setInt(1, page);
+            stm.setInt(2, ((page - 1) * size));
+            try(ResultSet rs = stm.executeQuery();){
+                List<Flight> data = new ArrayList<>();
+                while (rs.next()){
+                    data.add(map(rs));
+                }
+
+                return data;
+            }
+        } catch (SQLException e){
+            throw new IllegalStateException("Ошибка получения информации об аэропортах", e);
+        }
+    }
+
+    public int count(){
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement stm = conn.prepareStatement(GET_COUNT_FLIGHT);
+             ResultSet rs = stm.executeQuery();)
+        {
+            while (rs.next()){
+                return rs.getInt(1);
+            }
+
+            return 0;
         } catch (SQLException e){
             throw new IllegalStateException("Ошибка получения информации о полетах", e);
         }

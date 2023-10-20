@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface IFlightService {
     List<Flight> getAll();
+
+    List<Flight> getPage(int page, int size);
 }
