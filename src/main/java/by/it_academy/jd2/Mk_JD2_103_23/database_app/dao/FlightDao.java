@@ -1,6 +1,8 @@
 package by.it_academy.jd2.Mk_JD2_103_23.database_app.dao;
 
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Filter;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Flight;
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.PageFormat;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.api.IFlightDao;
 
 import javax.sql.DataSource;
@@ -12,19 +14,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlightDao implements IFlightDao {
-    private static final String GET_ALL_FLIGHTS = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v;";
-    private static final String GET_PAGE_FLIGHT = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v LIMIT ? OFFSET ?;";
+    private final static String GET_ALL_FLIGHT = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v";
     private static final String GET_COUNT_FLIGHT = "SELECT count(*) FROM bookings.flights_v;";
     private final DataSource dataSource;
 
     public FlightDao(DataSource dataSource) {
         this.dataSource = dataSource;
     }
+
     @Override
     public List<Flight> getAll() {
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement stm = conn.prepareStatement(GET_ALL_FLIGHTS);
-             ResultSet rs = stm.executeQuery();)
+             PreparedStatement stm = conn.prepareStatement(GET_ALL_FLIGHT);
+             ResultSet rs = stm.executeQuery())
         {
             List<Flight> data = new ArrayList<>();
             while (rs.next()){
@@ -39,14 +41,92 @@ public class FlightDao implements IFlightDao {
     }
 
     @Override
-    public List<Flight> getPage(int page, int size) {
+    public List<Flight> getPage(PageFormat pageFormat) {
+        return getPage(null, pageFormat);
+    }
+
+    @Override
+    public List<Flight> getPage(Filter filter, PageFormat pageFormat) {
+        String sql = GET_ALL_FLIGHT;
+
+        List<Object> params = new ArrayList<>();
+        if(filter != null){
+            StringBuilder sqlBuilder = new StringBuilder();
+
+            boolean needSeparator = false;
+            if(filter.getArrivalAirport() != null){
+                if(needSeparator){
+                    sqlBuilder.append(" AND ");
+                } else {
+                    needSeparator = true;
+                }
+                sqlBuilder.append("arrival_airport = ?");
+                params.add(filter.getArrivalAirport());
+            }
+            if(filter.getDepartureAirport() != null){
+                if(needSeparator){
+                    sqlBuilder.append(" AND ");
+                } else {
+                    needSeparator = true;
+                }
+                sqlBuilder.append("departure_airport = ?");
+                params.add(filter.getDepartureAirport());
+            }
+            if(filter.getStatus() != null){
+                if(needSeparator){
+                    sqlBuilder.append(" AND ");
+                } else {
+                    needSeparator = true;
+                }
+                sqlBuilder.append("status = ?");
+                params.add(filter.getStatus());
+            }
+            if(filter.getScheduledDeparture() != null){
+                if(needSeparator){
+                    sqlBuilder.append(" AND ");
+                } else {
+                    needSeparator = true;
+                }
+                sqlBuilder.append("scheduled_departure >= ? AND scheduled_departure < ?");
+                params.add(filter.getScheduledDeparture());
+                params.add(filter.getScheduledDeparture().plusDays(1));
+            }
+            if(filter.getScheduledArrival() != null){
+                if(needSeparator){
+                    sqlBuilder.append(" AND ");
+                } else {
+                    needSeparator = true;
+                }
+                sqlBuilder.append("scheduled_arrival >= ? AND scheduled_arrival < ?");
+                params.add(filter.getScheduledArrival());
+                params.add(filter.getScheduledArrival().plusDays(1));
+            }
+
+            if(sqlBuilder.length() > 0){
+                sqlBuilder.insert(0, " WHERE ");
+                sql += sqlBuilder.toString();
+            }
+        }
+
+        if(pageFormat != null){
+            int size = pageFormat.getSize();
+            int page = pageFormat.getPage();
+
+            sql += " LIMIT ? OFFSET ?";
+            params.add(size);
+            params.add(((page - 1) * size));
+        }
+
         try (Connection conn = dataSource.getConnection();
-             PreparedStatement stm = conn.prepareStatement(GET_PAGE_FLIGHT);
+             PreparedStatement stm = conn.prepareStatement(sql)
         )
         {
-            stm.setInt(1, page);
-            stm.setInt(2, ((page - 1) * size));
-            try(ResultSet rs = stm.executeQuery();){
+            int index = 1;
+            for (Object param : params) {
+                stm.setObject(index++, param);
+            }
+
+            try(ResultSet rs = stm.executeQuery()){
                 List<Flight> data = new ArrayList<>();
                 while (rs.next()){
                     data.add(map(rs));
@@ -55,14 +135,14 @@ public class FlightDao implements IFlightDao {
                 return data;
             }
         } catch (SQLException e){
-            throw new IllegalStateException("Ошибка получения информации об аэропортах", e);
+            throw new IllegalStateException("Ошибка получения информации о полетах", e);
         }
     }
 
     public int count(){
         try (Connection conn = dataSource.getConnection();
              PreparedStatement stm = conn.prepareStatement(GET_COUNT_FLIGHT);
-             ResultSet rs = stm.executeQuery();)
+             ResultSet rs = stm.executeQuery())
         {
             while (rs.next()){
                 return rs.getInt(1);

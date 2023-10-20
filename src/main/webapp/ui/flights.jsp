@@ -37,23 +37,25 @@
         <tbody>
             <c:forEach items="${allFlight}" var="item">
                 <tr>
-                    <td>${item.aircraftCode}</td>
-                    <td>${item.flightId}</td>
-                    <td>${item.flightNo}</td>
-                    <td>${item.scheduledDeparture}</td>
-                    <td>${item.scheduledDepartureLocal}</td>
-                    <td>${item.scheduledArrivalLocal}</td>
-                    <td>${item.scheduledDuration}</td>
-                    <td>${item.departureAirport}</td>
-                    <td>${item.departureAirportName}</td>
-                    <td>${item.departureCity}</td>
-                    <td>${item.arrivalAirportName}</td>
-                    <td>${item.arrivalCity}</td>
-                    <td>${item.status}</td>
-                    <td>${item.aircraftCode}</td>
-                    <td>${item.actualDeparture}</td>
-                    <td>${item.actualDepartureLocal}</td>
-                    <td>${item.actualArrival}</td>
+                   <td>${item.aircraftCode}</td>
+                   <td>${item.flightId}</td>
+                   <td>${item.flightNo}</td>
+                   <td>${item.scheduledDeparture}</td>
+                   <td>${item.scheduledDepartureLocal}</td>
+                   <td>${item.scheduledArrival}</td>
+                   <td>${item.scheduledArrivalLocal}</td>
+                   <td>${item.scheduledDuration}</td>
+                   <td>${item.departureAirport}</td>
+                   <td>${item.departureAirportName}</td>
+                   <td>${item.departureCity}</td>
+                   <td>${item.arrivalAirport}</td>
+                   <td>${item.arrivalAirportName}</td>
+                   <td>${item.arrivalCity}</td>
+                   <td>${item.status}</td>
+                   <td>${item.aircraftCode}</td>
+                   <td>${item.actualDeparture}</td>
+                   <td>${item.actualDepartureLocal}</td>
+                   <td>${item.actualArrival}</td>
                 </tr>
             </c:forEach>
         </tbody>

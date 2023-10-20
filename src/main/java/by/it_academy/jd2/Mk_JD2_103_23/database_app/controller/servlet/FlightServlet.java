@@ -1,6 +1,8 @@
 package by.it_academy.jd2.Mk_JD2_103_23.database_app.controller.servlet;
 
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Filter;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Flight;
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.PageFormat;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.service.api.IFlightService;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.service.factory.FlightServiceFactory;
 import jakarta.servlet.ServletException;
@@ -10,6 +12,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -27,6 +30,22 @@ public class FlightServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
+        String scheduledDepartureRaw = req.getParameter(SCHEDULED_DEPARTURE_PARAM);
+        LocalDate scheduledDeparture = null;
+        if(scheduledDepartureRaw != null && !scheduledDepartureRaw.isBlank()){
+            scheduledDeparture = LocalDate.parse(scheduledDepartureRaw, formatter);
+        }
+
+        String scheduledArrivalRaw = req.getParameter(SCHEDULED_ARRIVAL_PARAM);
+        LocalDate scheduledArrival = null;
+        if(scheduledArrivalRaw != null && !scheduledArrivalRaw.isBlank()){
+            scheduledArrival = LocalDate.parse(scheduledArrivalRaw, formatter);
+        }
+
+        String departureAirport = req.getParameter(DEPARTURE_AIRPORT_PARAM);
+        String arrivalAirport = req.getParameter(ARRIVAL_AIRPORT_PARAM);
+        String status = req.getParameter(STATUS_PARAM);
+
         String pageRaw = req.getParameter(PAGE_PARAM);
         int page;
         if(pageRaw == null || pageRaw.isBlank()){
@@ -42,7 +61,10 @@ public class FlightServlet extends HttpServlet {
             size = Integer.parseInt(sizeRaw);
         }
 
-        List<Flight> allFlight = this.service.getPage(page, size);
+        Filter filter = new Filter(scheduledDeparture, scheduledArrival, departureAirport, arrivalAirport, status);
+        PageFormat pageFormat = new PageFormat(page, size);
+
+        List<Flight> allFlight = this.service.getPage(filter, pageFormat);
         req.setAttribute("allFlight", allFlight);
         req.getRequestDispatcher("/ui/flights.jsp").forward(req, resp);
     }
