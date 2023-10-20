@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlightDao implements IFlightDao {
-    private final static String GET_ALL_FLIGHTS = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v;";
-    private final static String GET_PAGE_FLIGHT = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v LIMIT ? OFFSET ?;";
-    private final static String GET_COUNT_FLIGHT = "SELECT count(*) FROM bookings.flights_v;";
+    private static final String GET_ALL_FLIGHTS = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v;";
+    private static final String GET_PAGE_FLIGHT = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v LIMIT ? OFFSET ?;";
+    private static final String GET_COUNT_FLIGHT = "SELECT count(*) FROM bookings.flights_v;";
     private final DataSource dataSource;
 
     public FlightDao(DataSource dataSource) {

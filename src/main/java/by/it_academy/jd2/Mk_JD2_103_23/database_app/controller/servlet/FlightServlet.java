@@ -10,12 +10,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @WebServlet(urlPatterns = "/flights")
 public class FlightServlet extends HttpServlet {
     private static final String PAGE_PARAM = "page";
     private static final String SIZE_PARAM = "size";
+    private static final String SCHEDULED_DEPARTURE_PARAM = "scheduled_departure";
+    private static final String SCHEDULED_ARRIVAL_PARAM = "scheduled_arrival";
+    private static final String DEPARTURE_AIRPORT_PARAM = "departure_airport";
+    private static final String ARRIVAL_AIRPORT_PARAM = "arrival_airport";
+    private static final String STATUS_PARAM = "status";
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy.MM.dd");
     private final IFlightService service = FlightServiceFactory.getInstance();
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
