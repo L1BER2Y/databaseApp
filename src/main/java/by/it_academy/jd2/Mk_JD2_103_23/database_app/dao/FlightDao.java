@@ -4,8 +4,13 @@ import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Filter;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Flight;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.PageFormat;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.api.IFlightDao;
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.entity.AircraftEntity;
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.entity.FlightEntity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 
-import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -14,39 +19,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FlightDao implements IFlightDao {
-    private final static String GET_ALL_FLIGHT = "SELECT flight_id, flight_no, scheduled_departure, scheduled_departure_local, scheduled_arrival, scheduled_arrival_local, scheduled_duration, departure_airport, departure_airport_name, departure_city, arrival_airport, arrival_airport_name, arrival_city, status, aircraft_code, actual_departure, actual_departure_local, actual_arrival, actual_arrival_local, actual_duration FROM bookings.flights_v";
-    private static final String GET_COUNT_FLIGHT = "SELECT count(*) FROM bookings.flights_v;";
-    private final DataSource dataSource;
+    private final EntityManagerFactory emf;
 
-    public FlightDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public FlightDao(EntityManagerFactory emf) {
+        this.emf = emf;
     }
 
     @Override
-    public List<Flight> getAll() {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stm = conn.prepareStatement(GET_ALL_FLIGHT);
-             ResultSet rs = stm.executeQuery())
-        {
-            List<Flight> data = new ArrayList<>();
-            while (rs.next()){
-                data.add(map(rs));
-            }
-
-            return data;
-
-        } catch (SQLException e){
-            throw new IllegalStateException("Ошибка получения информации о полетах", e);
-        }
+    public List<FlightEntity> getAll() {
+        EntityManager em = emf.createEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<FlightEntity> query = cb.createQuery(FlightEntity.class);
+        return em.createQuery(query).getResultList();
     }
 
     @Override
-    public List<Flight> getPage(PageFormat pageFormat) {
+    public List<FlightEntity> getPage(PageFormat pageFormat) {
         return getPage(null, pageFormat);
     }
 
     @Override
-    public List<Flight> getPage(Filter filter, PageFormat pageFormat) {
+    public List<FlightEntity> getPage(Filter filter, PageFormat pageFormat) {
         String sql = GET_ALL_FLIGHT;
 
         List<Object> params = new ArrayList<>();

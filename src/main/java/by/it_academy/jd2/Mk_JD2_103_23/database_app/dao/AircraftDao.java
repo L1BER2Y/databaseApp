@@ -1,44 +1,27 @@
 package by.it_academy.jd2.Mk_JD2_103_23.database_app.dao;
 
-import by.it_academy.jd2.Mk_JD2_103_23.database_app.core.dto.Aircraft;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.api.IAircraftDao;
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.entity.AircraftEntity;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 
-import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AircraftDao implements IAircraftDao {
-    private final static String GET_ALL_AIRCRAFTS = "SELECT aircraft_code, model, range FROM bookings.aircrafts;";
 
-    private final DataSource dataSource;
+    private final EntityManagerFactory emf;
 
-    public AircraftDao(DataSource dataSource) {
-        this.dataSource = dataSource;
+    public AircraftDao(EntityManagerFactory emf) {
+        this.emf = emf;
     }
+
     @Override
-    public List<Aircraft> getAll() {
-        try (Connection conn = dataSource.getConnection();
-             PreparedStatement stm = conn.prepareStatement(GET_ALL_AIRCRAFTS);
-             ResultSet rs = stm.executeQuery();)
-        {
-            List<Aircraft> data = new ArrayList<>();
-            while (rs.next()){
-                Aircraft item = new Aircraft();
-                item.setAircraftCode(rs.getString("aircraft_code"));
-                item.setModel(rs.getString("model"));
-                item.setRange(rs.getInt("range"));
-
-                data.add(item);
-            }
-
-            return data;
-
-        } catch (SQLException e){
-            throw new IllegalStateException("Ошибка получения информации о самолётах", e);
-        }
+    public List<AircraftEntity> getAll() {
+        EntityManager em = emf.createEntityManager();
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<AircraftEntity> query = cb.createQuery(AircraftEntity.class);
+        return em.createQuery(query).getResultList();
     }
 }

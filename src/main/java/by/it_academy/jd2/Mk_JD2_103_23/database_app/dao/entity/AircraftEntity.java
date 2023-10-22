@@ -1,8 +1,17 @@
 package by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 import java.util.Objects;
 
+@Entity
+@Table(schema = "bookings", name ="aircrafts")
 public class AircraftEntity {
+    @Id
+    @Column(name = "aircraft_code")
     private String aircraftCode;
     private String model;
     private Integer range;

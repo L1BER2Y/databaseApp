@@ -2,7 +2,7 @@ package by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.factory;
 
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.FlightDao;
 import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.api.IFlightDao;
-import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.data_source.DBDataSource;
+import by.it_academy.jd2.Mk_JD2_103_23.database_app.dao.data_source.EMFFactory;
 
 public class FlightDaoFactory {
     private static volatile IFlightDao instance;
@@ -14,7 +14,7 @@ public class FlightDaoFactory {
         if(instance == null){
             synchronized (FlightDaoFactory.class){
                 if(instance == null){
-                    instance = new FlightDao(DBDataSource.getInstance());
+                    instance = new FlightDao(EMFFactory.getInstance());
                 }
             }
         }
