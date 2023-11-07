@@ -7,6 +7,8 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
 import java.util.List;
 
 public class AirportDao implements IAirportDao {
@@ -19,7 +21,8 @@ public class AirportDao implements IAirportDao {
     public List<AirportEntity> getAll() {
         EntityManager em = emf.createEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<AirportEntity> query = cb.createQuery(AirportEntity.class);
-        return em.createQuery(query).getResultList();
+        CriteriaQuery<?> query = cb.createQuery();
+        query.from(AirportEntity.class);
+        return (List<AirportEntity>) em.createQuery(query).getResultList();
     }
 }

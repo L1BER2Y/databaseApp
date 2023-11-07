@@ -32,11 +32,27 @@ public class FlightService implements IFlightService {
 
     @Override
     public List<Flight> getPage(PageFormat pageFormat) {
-        return this.dao.getPage(pageFormat);
+        return this.dao.getPage(pageFormat).stream()
+                .map(flightEntity -> new Flight(flightEntity.getFlightId(), flightEntity.getFlightNo(), flightEntity.getScheduledDeparture(),
+                        flightEntity.getScheduledDepartureLocal(), flightEntity.getScheduledArrival(), flightEntity.getScheduledArrivalLocal(),
+                        flightEntity.getScheduledDuration(), flightEntity.getDepartureAirport(), flightEntity.getDepartureAirportName(),
+                        flightEntity.getDepartureCity(), flightEntity.getArrivalAirport(), flightEntity.getArrivalAirportName(),
+                        flightEntity.getArrivalCity(), flightEntity.getStatus(), flightEntity.getAircraftCode(), flightEntity.getActualDeparture(),
+                        flightEntity.getScheduledDepartureLocal(), flightEntity.getActualArrival(), flightEntity.getActualArrivalLocal(),
+                        flightEntity.getActualDuration()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<Flight> getPage(Filter filter, PageFormat pageFormat) {
-        return this.dao.getPage(filter, pageFormat);
+        return this.dao.getPage(filter, pageFormat).stream()
+                .map(flightEntity -> new Flight(flightEntity.getFlightId(), flightEntity.getFlightNo(), flightEntity.getScheduledDeparture(),
+                        flightEntity.getScheduledDepartureLocal(), flightEntity.getScheduledArrival(), flightEntity.getScheduledArrivalLocal(),
+                        flightEntity.getScheduledDuration(), flightEntity.getDepartureAirport(), flightEntity.getDepartureAirportName(),
+                        flightEntity.getDepartureCity(), flightEntity.getArrivalAirport(), flightEntity.getArrivalAirportName(),
+                        flightEntity.getArrivalCity(), flightEntity.getStatus(), flightEntity.getAircraftCode(), flightEntity.getActualDeparture(),
+                        flightEntity.getScheduledDepartureLocal(), flightEntity.getActualArrival(), flightEntity.getActualArrivalLocal(),
+                        flightEntity.getActualDuration()))
+                .collect(Collectors.toList());
     }
 }

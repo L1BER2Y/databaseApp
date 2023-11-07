@@ -21,7 +21,8 @@ public class AircraftDao implements IAircraftDao {
     public List<AircraftEntity> getAll() {
         EntityManager em = emf.createEntityManager();
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<AircraftEntity> query = cb.createQuery(AircraftEntity.class);
-        return em.createQuery(query).getResultList();
+        CriteriaQuery<?> query = cb.createQuery();
+        query.from(AircraftEntity.class);
+        return (List<AircraftEntity>) em.createQuery(query).getResultList();
     }
 }

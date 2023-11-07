@@ -12,44 +12,44 @@ import java.util.Objects;
 public class FlightEntity {
     @Id
     @Column(name = "flight_id")
-   private String flightId;
+    private String flightId;
     @Column(name = "flight_no")
     private String flightNo;
     @Column(name = "scheduled_departure")
     private String scheduledDeparture;
     @Column(name = "scheduled_departure_local")
-   private String scheduledDepartureLocal;
+    private String scheduledDepartureLocal;
     @Column(name = "scheduled_arrival")
-   private String scheduledArrival;
+    private String scheduledArrival;
     @Column(name = "scheduled_arrival_local")
-   private String scheduledArrivalLocal;
+    private String scheduledArrivalLocal;
     @Column(name = "scheduled_duration")
-   private String scheduledDuration;
+    private String scheduledDuration;
     @Column(name = "departure_airport")
-   private String departureAirport;
+    private String departureAirport;
     @Column(name = "departure_airport_name")
-   private String departureAirportName;
+    private String departureAirportName;
     @Column(name = "departure_city")
-   private String departureCity;
+    private String departureCity;
     @Column(name = "arrival_airport")
-   private String arrivalAirport;
+    private String arrivalAirport;
     @Column(name = "arrival_airport_name")
-   private String arrivalAirportName;
+    private String arrivalAirportName;
     @Column(name = "arrival_city")
-   private String arrivalCity;
-   private String status;
+    private String arrivalCity;
+    private String status;
     @Column(name = "aircraft_code")
-   private String aircraftCode;
+    private String aircraftCode;
     @Column(name = "actual_departure")
-   private String actualDeparture;
+    private String actualDeparture;
     @Column(name = "actual_departure_local")
-   private String actualDepartureLocal;
+    private String actualDepartureLocal;
     @Column(name = "actual_arrival")
-   private String actualArrival;
+    private String actualArrival;
     @Column(name = "actual_arrival_local")
-   private String actualArrivalLocal;
+    private String actualArrivalLocal;
     @Column(name = "actual_duration")
-   private String actualDuration;
+    private String actualDuration;
 
     public FlightEntity() {
     }
